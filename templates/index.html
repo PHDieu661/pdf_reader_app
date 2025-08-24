@@ -10,6 +10,11 @@
         <input type="file" name="file" accept="application/pdf" required>
         <button type="submit">Upload & Process</button>
     </form>
+    
+    {% if pdf_info %}
+      <h2>Thông tin PDF:</h2>
+      <pre>{{ pdf_info }}</pre>
+    {% endif %}
 
     {% if results %}
       <hr>

@@ -6,6 +6,7 @@ import pytesseract
 import cv2
 import numpy as np
 from PIL import Image
+import subprocess
 
 # Cấu hình
 UPLOAD_FOLDER = 'uploads'
@@ -33,6 +34,16 @@ def index():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(filepath)
             
+            # Gọi pdfinfo để lấy thông tin PDF
+            try:
+                result = subprocess.run(['pdfinfo', filepath], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                if result.returncode == 0:
+                    pdf_info = result.stdout
+                else:
+                    pdf_info = f"Lỗi khi gọi pdfinfo: {result.stderr}"
+            except Exception as e:
+                pdf_info = f"Lỗi hệ thống: {str(e)}"
+
             # 1. Trích text gốc
             text_all = []
             with pdfplumber.open(filepath) as pdf:
@@ -56,7 +67,7 @@ def index():
                     'text_ocr': ocr_all[i].strip()
                 })
 
-            return render_template('index.html', results=combined)
+            return render_template('index.html', results=combined, pdf_info=pdf_info)
 
     return render_template('index.html', results=None)
 
