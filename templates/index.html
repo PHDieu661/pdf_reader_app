@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF Vietnamese Reader</title>
+</head>
+<body>
+    <h1>Upload PDF để đọc tiếng Việt</h1>
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="application/pdf" required>
+        <button type="submit">Upload & Process</button>
+    </form>
+
+    {% if results %}
+      <hr>
+      {% for r in results %}
+        <h2>Trang {{ r.page }}</h2>
+        <h3>Text gốc:</h3>
+        <pre>{{ r.text_raw or '[Không có text gốc]' }}</pre>
+        <h3>Text OCR:</h3>
+        <pre>{{ r.text_ocr or '[Không có text OCR]' }}</pre>
+        <hr>
+      {% endfor %}
+    {% endif %}
+</body>
+</html>
