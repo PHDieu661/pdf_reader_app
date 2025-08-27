@@ -1,0 +1,2 @@
+PROCESS_TEXT = True
+PROCESS_IMAGE = True

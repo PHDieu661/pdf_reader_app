@@ -1,31 +1,23 @@
 import os
-from flask import Flask, request, render_template, redirect, url_for
-import pdfplumber
-from pdf2image import convert_from_path
-import pytesseract
-import cv2
-import numpy as np
-from PIL import Image
 import subprocess
+from flask import Flask, request, render_template, redirect, url_for
 
-# Cấu hình
+# Import từ các module đã tách
+from extractors.config import PROCESS_TEXT, PROCESS_IMAGE
+from extractors.text_extractor import extract_text_from_pdf
+from extractors.image_ocr import extract_text_from_images
+
+# Cấu hình thư mục upload
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'pdf'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Kiểm tra đuôi file
+# Kiểm tra đuôi file hợp lệ
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Tiền xử lý ảnh để OCR
-def preprocess_image(pil_img):
-    img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2GRAY)
-    _, thresh = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    return thresh
-
-# Route chính
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -33,38 +25,28 @@ def index():
         if file and allowed_file(file.filename):
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(filepath)
-            
-            # Gọi pdfinfo để lấy thông tin PDF
+
+            # Lấy thông tin PDF bằng pdfinfo
             try:
                 result = subprocess.run(['pdfinfo', filepath], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                if result.returncode == 0:
-                    pdf_info = result.stdout
-                else:
-                    pdf_info = f"Lỗi khi gọi pdfinfo: {result.stderr}"
+                pdf_info = result.stdout if result.returncode == 0 else f"Lỗi khi gọi pdfinfo: {result.stderr}"
             except Exception as e:
                 pdf_info = f"Lỗi hệ thống: {str(e)}"
 
-            # 1. Trích text gốc
-            text_all = []
-            with pdfplumber.open(filepath) as pdf:
-                for page in pdf.pages:
-                    text_all.append(page.extract_text() or '')
+            # Trích xuất văn bản
+            text_all = extract_text_from_pdf(filepath) if PROCESS_TEXT else []
 
-            # 2. OCR trên ảnh
-            ocr_all = []
-            pages = convert_from_path(filepath, dpi=300)
-            for img in pages:
-                processed = preprocess_image(img)
-                txt = pytesseract.image_to_string(processed, lang='vie', config='--psm 3')
-                ocr_all.append(txt)
+            # Trích xuất OCR từ ảnh
+            ocr_all = extract_text_from_images(filepath) if PROCESS_IMAGE else []
 
-            # Kết hợp kết quả
+            # Ghép kết quả theo từng trang
             combined = []
-            for i in range(len(text_all)):
+            max_pages = max(len(text_all), len(ocr_all))
+            for i in range(max_pages):
                 combined.append({
                     'page': i + 1,
-                    'text_raw': text_all[i].strip(),
-                    'text_ocr': ocr_all[i].strip()
+                    'text_raw': text_all[i] if i < len(text_all) else '',
+                    'text_ocr': ocr_all[i] if i < len(ocr_all) else ''
                 })
 
             return render_template('index.html', results=combined, pdf_info=pdf_info)

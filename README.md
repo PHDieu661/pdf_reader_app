@@ -10,6 +10,12 @@ Một ứng dụng web đơn giản dùng Flask để trích xuất nội dung t
 - Tiền xử lý ảnh với `OpenCV` để tăng độ chính xác OCR
 - Hiển thị kết quả từng trang: text gốc vs text OCR
 
+## 🧩 Kiến trúc module
+
+- `extractors/text_extractor.py`: Trích xuất văn bản từ PDF
+- `extractors/image_ocr.py`: Nhận dạng văn bản từ ảnh PDF
+- `extractors/config.py`: Cấu hình chế độ xử lý
+
 ## 🧰 Cài đặt
 
 ```bash
