@@ -25,7 +25,10 @@ venv\Scripts\activate         # Windows
 ```
 
 ### 2. Cài đặt thư viện
+
+```bash
 pip install -r requirements.txt
+```
 
 ## 📌 Yêu cầu hệ thống:
 - Cài đặt Poppler để dùng pdf2image
