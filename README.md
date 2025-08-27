@@ -1,24 +1,32 @@
 # 📄 PDF Text & OCR Extractor
 
-Một ứng dụng web đơn giản dùng Flask để trích xuất nội dung từ file PDF — bao gồm cả text gốc và text từ ảnh thông qua OCR.
+Ứng dụng web dùng Flask để trích xuất nội dung từ file PDF — hỗ trợ cả văn bản gốc và nhận dạng văn bản từ ảnh (OCR). Thiết kế theo kiến trúc module giúp dễ dàng nâng cấp từng phần xử lý.
 
-## 🚀 Tính năng
+---
 
-- Trích xuất text từ PDF bằng `pdfplumber`
-- Chuyển đổi PDF sang ảnh bằng `pdf2image`
-- Nhận dạng ký tự quang học (OCR) bằng `pytesseract`
+## 🚀 Tính năng chính
+
+- Trích xuất văn bản từ PDF bằng `pdfplumber`
+- Nhận dạng ký tự từ ảnh PDF bằng `pytesseract` + `pdf2image`
 - Tiền xử lý ảnh với `OpenCV` để tăng độ chính xác OCR
-- Hiển thị kết quả từng trang: text gốc vs text OCR
+- Cấu hình linh hoạt: xử lý văn bản, ảnh, hoặc cả hai
+- Modular hóa: dễ thay thế từng phần xử lý bằng thư viện khác
 
-## 🧩 Kiến trúc module
-
-- `extractors/text_extractor.py`: Trích xuất văn bản từ PDF
-- `extractors/image_ocr.py`: Nhận dạng văn bản từ ảnh PDF
-- `extractors/config.py`: Cấu hình chế độ xử lý
+---
 
 ## 🧰 Cài đặt
 
+### 1. Tạo môi trường ảo (khuyến nghị)
+
 ```bash
+python -m venv venv
+source venv/bin/activate      # macOS/Linux
+venv\Scripts\activate         # Windows
+```
+
+### 2. Cài đặt thư viện
 pip install -r requirements.txt
 
-
+## 📌 Yêu cầu hệ thống:
+- Cài đặt Poppler để dùng pdf2image
+- Cài đặt Tesseract OCR và ngôn ngữ vie để nhận dạng tiếng Việt
