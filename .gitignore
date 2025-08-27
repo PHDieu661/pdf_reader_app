@@ -1,1 +1,15 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Environment
+venv/
+.env/
+
+# IDE/editor config
+.vscode/
+.idea/
+
+# Uploads
 uploads/*
+!uploads/.gitkeep

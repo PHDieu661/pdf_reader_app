@@ -1,4 +1,18 @@
-Use pdfplumber for real text, and pdf2image + pytesseract for OCR (image)
-Needed packages : "pip install flask pdfplumber pdf2image pytesseract opencv-python pillow"
-Needed program: Tesseract OCR, Poppler 
-Create a "uploads" folder before running
+# 📄 PDF Text & OCR Extractor
+
+Một ứng dụng web đơn giản dùng Flask để trích xuất nội dung từ file PDF — bao gồm cả text gốc và text từ ảnh thông qua OCR.
+
+## 🚀 Tính năng
+
+- Trích xuất text từ PDF bằng `pdfplumber`
+- Chuyển đổi PDF sang ảnh bằng `pdf2image`
+- Nhận dạng ký tự quang học (OCR) bằng `pytesseract`
+- Tiền xử lý ảnh với `OpenCV` để tăng độ chính xác OCR
+- Hiển thị kết quả từng trang: text gốc vs text OCR
+
+## 🧰 Cài đặt
+
+```bash
+pip install -r requirements.txt
+
+
