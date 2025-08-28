@@ -13,3 +13,7 @@ venv/
 # Uploads
 uploads/*
 !uploads/.gitkeep
+
+# Ignore Docker build artifacts (if any)
+*.tar
+*.img
